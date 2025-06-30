@@ -1,0 +1,106 @@
+{
+  "name": "lsu-ecole-cap",
+  "version": "1.0.0",
+  "description": "Système de gestion LSU pour l'école primaire École du Cap",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx live-server --port=3000 --open=/index.html",
+    "dev": "npx live-server --port=3000 --open=/index.html --watch=js,css,index.html",
+    "test": "node -e \"console.log('Tests disponibles dans le navigateur: runLSUTests()')\"",
+    "test:browser": "open http://localhost:3000 && echo 'Ouvrez la console et lancez: runLSUTests()'",
+    "test:headless": "npx playwright test",
+    "build": "bash deploy/deploy.sh -e prod -t local -c",
+    "build:dev": "bash deploy/deploy.sh -e dev -t local",
+    "build:staging": "bash deploy/deploy.sh -e staging -t local -b",
+    "deploy:local": "bash deploy/deploy.sh -e prod -t local -b -c",
+    "deploy:server": "bash deploy/deploy.sh -e prod -t server -b -c",
+    "deploy:cloud": "bash deploy/deploy.sh -e prod -t cloud -b -c",
+    "docker:build": "docker build -t lsu-ecole-cap:latest -f deploy/Dockerfile .",
+    "docker:run": "docker run -p 3000:3000 --name lsu-app lsu-ecole-cap:latest",
+    "docker:compose": "cd deploy && docker-compose up -d",
+    "docker:stop": "cd deploy && docker-compose down",
+    "docker:logs": "cd deploy && docker-compose logs -f",
+    "docker:restart": "cd deploy && docker-compose restart",
+    "backup": "bash scripts/backup.sh",
+    "restore": "bash scripts/restore.sh",
+    "lint": "npx eslint js/*.js --fix",
+    "format": "npx prettier --write '**/*.{js,css,html,json}'",
+    "validate": "npm run lint && npm run test",
+    "clean": "rm -rf dist backups/*.tar.gz node_modules package-lock.json",
+    "setup": "bash scripts/setup.sh",
+    "postinstall": "echo 'Installation terminée. Lancez npm run setup pour configurer l environnement.'",
+    "prestart": "echo 'Démarrage de LSU École du Cap...'",
+    "poststart": "echo 'Application accessible sur http://localhost:3000'"
+  },
+  "keywords": [
+    "lsu",
+    "livret-scolaire",
+    "ecole-primaire",
+    "evaluation",
+    "commentaires",
+    "ia",
+    "ollama",
+    "education"
+  ],
+  "author": "LSU École du Cap <contact@lsu-ecole-cap.fr>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lsu-ecole-cap/gestion-lsu.git"
+  },
+  "bugs": {
+    "url": "https://github.com/lsu-ecole-cap/gestion-lsu/issues"
+  },
+  "homepage": "https://lsu-ecole-cap.fr",
+  "devDependencies": {
+    "live-server": "^1.2.2",
+    "eslint": "^8.57.0",
+    "prettier": "^3.2.5",
+    "@playwright/test": "^1.42.1"
+  },
+  "dependencies": {
+    "bootstrap": "^5.3.3",
+    "bootstrap-icons": "^1.11.3"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ],
+  "config": {
+    "lsu": {
+      "version": "1.0.0",
+      "environment": "development",
+      "ai": {
+        "provider": "ollama",
+        "model": "llama2",
+        "url": "http://localhost:11434"
+      },
+      "backup": {
+        "auto": true,
+        "interval": 86400,
+        "maxBackups": 10
+      }
+    }
+  },
+  "files": [
+    "index.html",
+    "css/",
+    "js/",
+    "images/",
+    "data/",
+    "README.md",
+    "package.json"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "funding": {
+    "type": "individual",
+    "url": "https://github.com/sponsors/lsu-ecole-cap"
+  }
+} 

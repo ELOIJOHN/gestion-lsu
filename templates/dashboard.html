@@ -1,0 +1,230 @@
+{% extends "base.html" %}
+
+{% block title %}Tableau de Bord - LSU École du Cap{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="mb-4">
+            <i class="fas fa-tachometer-alt me-2"></i>
+            Tableau de Bord
+        </h1>
+    </div>
+</div>
+
+<!-- Statistiques -->
+<div class="row g-4 mb-4">
+    <div class="col-md-6 col-lg-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="card-title">{{ classes|length }}</h4>
+                        <p class="card-text">Classes</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-chalkboard fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 col-lg-3">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="card-title">{{ total_eleves }}</h4>
+                        <p class="card-text">Élèves</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-users fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 col-lg-3">
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="card-title">{{ evaluations_recentes|length }}</h4>
+                        <p class="card-text">Évaluations récentes</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-clipboard-check fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 col-lg-3">
+        <div class="card bg-warning text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="card-title">{{ current_user.nom }}</h4>
+                        <p class="card-text">Enseignant</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-user-tie fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Contenu principal -->
+<div class="row g-4">
+    <!-- Classes -->
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-chalkboard me-2"></i>
+                    Mes Classes
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if classes %}
+                    <div class="list-group list-group-flush">
+                        {% for classe in classes %}
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-1">{{ classe.nom }}</h6>
+                                <small class="text-muted">{{ classe.annee_scolaire }}</small>
+                            </div>
+                            <div>
+                                <span class="badge bg-primary rounded-pill">
+                                    {{ classe.eleves|length }} élève(s)
+                                </span>
+                                <a href="{{ url_for('detail_classe', classe_id=classe.id) }}" 
+                                   class="btn btn-sm btn-outline-primary ms-2">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-chalkboard fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">Aucune classe créée</p>
+                        <a href="{{ url_for('nouvelle_classe') }}" class="btn btn-primary">
+                            <i class="fas fa-plus me-1"></i>Créer une classe
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Évaluations récentes -->
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-clipboard-check me-2"></i>
+                    Évaluations Récentes
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if evaluations_recentes %}
+                    <div class="list-group list-group-flush">
+                        {% for evaluation in evaluations_recentes %}
+                        <div class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h6 class="mb-1">{{ evaluation.eleve.prenom }} {{ evaluation.eleve.nom }}</h6>
+                                    <p class="mb-1">{{ evaluation.matiere.nom }} - {{ evaluation.periode }}</p>
+                                    <small class="text-muted">
+                                        {{ evaluation.date_evaluation.strftime('%d/%m/%Y') }}
+                                    </small>
+                                </div>
+                                <span class="badge bg-{{ 'success' if evaluation.niveau == 'Très bien' else 'warning' if evaluation.niveau == 'Satisfaisant' else 'danger' }} rounded-pill">
+                                    {{ evaluation.niveau }}
+                                </span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-clipboard-check fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">Aucune évaluation récente</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Actions rapides -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-bolt me-2"></i>
+                    Actions Rapides
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <a href="{{ url_for('nouvelle_classe') }}" class="btn btn-outline-primary w-100">
+                            <i class="fas fa-plus me-2"></i>Nouvelle Classe
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="{{ url_for('nouvel_eleve') }}" class="btn btn-outline-success w-100">
+                            <i class="fas fa-user-plus me-2"></i>Nouvel Élève
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="{{ url_for('generateur') }}" class="btn btn-outline-info w-100">
+                            <i class="fas fa-robot me-2"></i>Générateur IA
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="{{ url_for('photos') }}" class="btn btn-outline-warning w-100">
+                            <i class="fas fa-camera me-2"></i>Photos
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Informations système -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card bg-light">
+            <div class="card-body">
+                <h6 class="card-title">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Informations Système
+                </h6>
+                <div class="row">
+                    <div class="col-md-6">
+                        <p class="mb-1"><strong>Enseignant :</strong> {{ current_user.prenom }} {{ current_user.nom }}</p>
+                        <p class="mb-1"><strong>Email :</strong> {{ current_user.email }}</p>
+                        <p class="mb-1"><strong>Rôle :</strong> {{ current_user.role|title }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p class="mb-1"><strong>Année scolaire :</strong> 2024-2025</p>
+                        <p class="mb-1"><strong>Version :</strong> LSU École du Cap v1.0</p>
+                        <p class="mb-1"><strong>Dernière connexion :</strong> {{ current_user.date_creation.strftime('%d/%m/%Y') }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

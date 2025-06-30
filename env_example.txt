@@ -1,0 +1,18 @@
+# LSU École du Cap - Variables d'environnement
+# Copiez ce fichier vers .env et modifiez les valeurs
+
+# Clé secrète Flask (générez une clé sécurisée)
+SECRET_KEY=lsu-ecole-cap-2024-secret-key-change-this
+
+# Clé API OpenAI (obtenez-la sur https://platform.openai.com)
+OPENAI_API_KEY=your-openai-api-key-here
+
+# Environnement Flask
+FLASK_ENV=development
+
+# Configuration de la base de données (optionnel)
+DATABASE_URL=sqlite:///lsu_ecole_cap.db
+
+# Configuration du serveur (optionnel)
+HOST=0.0.0.0
+PORT=5000 

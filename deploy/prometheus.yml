@@ -1,0 +1,74 @@
+# LSU École du Cap - Configuration Prometheus
+# Monitoring et métriques de l'application
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+# Règles d'alerte
+rule_files:
+  - "alerts.yml"
+
+# Configuration des alertes
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          - alertmanager:9093
+
+# Configuration de scraping
+scrape_configs:
+  # Prometheus lui-même
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # Application LSU
+  - job_name: 'lsu-app'
+    static_configs:
+      - targets: ['lsu-app:3000']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+    scrape_timeout: 10s
+
+  # Nginx
+  - job_name: 'nginx'
+    static_configs:
+      - targets: ['lsu-nginx:80']
+    metrics_path: '/nginx_status'
+    scrape_interval: 30s
+
+  # Base de données (si applicable)
+  - job_name: 'database'
+    static_configs:
+      - targets: ['lsu-db:5432']
+    scrape_interval: 60s
+
+  # Node Exporter (métriques système)
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['node-exporter:9100']
+    scrape_interval: 30s
+
+  # Docker (métriques des conteneurs)
+  - job_name: 'docker'
+    static_configs:
+      - targets: ['docker:9323']
+    scrape_interval: 30s
+
+  # Ollama (IA locale)
+  - job_name: 'ollama'
+    static_configs:
+      - targets: ['localhost:11434']
+    metrics_path: '/api/tags'
+    scrape_interval: 60s
+    scrape_timeout: 30s
+
+# Métriques personnalisées pour LSU
+  - job_name: 'lsu-custom'
+    static_configs:
+      - targets: ['lsu-app:3000']
+    metrics_path: '/api/metrics'
+    scrape_interval: 60s
+    scrape_timeout: 15s
+    honor_labels: true 

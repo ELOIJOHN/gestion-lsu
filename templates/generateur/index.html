@@ -1,0 +1,320 @@
+{% extends "base.html" %}
+
+{% block title %}Générateur IA - LSU École du Cap{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="mb-4">
+            <i class="fas fa-robot me-2"></i>
+            Générateur IA de Commentaires
+        </h1>
+        <p class="text-muted">
+            Générez automatiquement des commentaires d'évaluation personnalisés avec l'intelligence artificielle
+        </p>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Formulaire de génération -->
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-magic me-2"></i>
+                    Génération de Commentaire
+                </h5>
+            </div>
+            <div class="card-body">
+                <form id="generateurForm">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="eleve_id" class="form-label">
+                                <i class="fas fa-user me-1"></i>Élève
+                            </label>
+                            <select class="form-select" id="eleve_id" name="eleve_id" required>
+                                <option value="">Sélectionner un élève</option>
+                                {% for eleve in eleves %}
+                                <option value="{{ eleve.id }}">
+                                    {{ eleve.prenom }} {{ eleve.nom }} - {{ eleve.classe.nom }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="type_commentaire" class="form-label">
+                                <i class="fas fa-comment me-1"></i>Type de Commentaire
+                            </label>
+                            <select class="form-select" id="type_commentaire" name="type_commentaire" required>
+                                <option value="">Sélectionner le type</option>
+                                <option value="bulletin">Commentaire de bulletin</option>
+                                <option value="livret">Commentaire de livret</option>
+                                <option value="observation">Observation générale</option>
+                                <option value="progression">Commentaire de progression</option>
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="periode" class="form-label">
+                                <i class="fas fa-calendar me-1"></i>Période
+                            </label>
+                            <select class="form-select" id="periode" name="periode" required>
+                                <option value="">Sélectionner la période</option>
+                                <option value="P1">Période 1 (Sept-Oct)</option>
+                                <option value="P2">Période 2 (Nov-Déc)</option>
+                                <option value="P3">Période 3 (Jan-Fév)</option>
+                                <option value="P4">Période 4 (Mars-Avril)</option>
+                                <option value="P5">Période 5 (Mai-Juin)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="tone" class="form-label">
+                                <i class="fas fa-palette me-1"></i>Ton du Commentaire
+                            </label>
+                            <select class="form-select" id="tone" name="tone">
+                                <option value="encourageant">Encourageant</option>
+                                <option value="neutre">Neutre</option>
+                                <option value="constructif">Constructif</option>
+                                <option value="bienveillant">Bienveillant</option>
+                            </select>
+                        </div>
+                        
+                        <div class="col-12">
+                            <label for="observations" class="form-label">
+                                <i class="fas fa-sticky-note me-1"></i>Observations Particulières
+                            </label>
+                            <textarea class="form-control" id="observations" name="observations" 
+                                      rows="4" placeholder="Ajoutez vos observations spécifiques sur l'élève (optionnel)"></textarea>
+                            <div class="form-text">
+                                Décrivez les points forts, difficultés, comportement, ou éléments particuliers à prendre en compte
+                            </div>
+                        </div>
+                        
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary btn-lg" id="generateBtn">
+                                <i class="fas fa-magic me-2"></i>
+                                Générer le Commentaire
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary ms-2" id="resetBtn">
+                                <i class="fas fa-undo me-1"></i>
+                                Réinitialiser
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Résultat et historique -->
+    <div class="col-lg-4">
+        <!-- Résultat -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-comment-dots me-2"></i>
+                    Commentaire Généré
+                </h5>
+            </div>
+            <div class="card-body">
+                <div id="loadingResult" class="text-center d-none">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Génération en cours...</span>
+                    </div>
+                    <p class="mt-2 text-muted">Génération en cours...</p>
+                </div>
+                
+                <div id="resultContent" class="d-none">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Commentaire généré avec succès !
+                    </div>
+                    <div id="generatedComment" class="border rounded p-3 bg-light">
+                        <!-- Le commentaire généré sera affiché ici -->
+                    </div>
+                    <div class="mt-3">
+                        <button class="btn btn-success btn-sm" id="saveCommentBtn">
+                            <i class="fas fa-save me-1"></i>Sauvegarder
+                        </button>
+                        <button class="btn btn-outline-primary btn-sm ms-2" id="regenerateBtn">
+                            <i class="fas fa-redo me-1"></i>Régénérer
+                        </button>
+                        <button class="btn btn-outline-secondary btn-sm ms-2" id="copyBtn">
+                            <i class="fas fa-copy me-1"></i>Copier
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="noResult" class="text-center text-muted">
+                    <i class="fas fa-comment fa-3x mb-3"></i>
+                    <p>Remplissez le formulaire et cliquez sur "Générer" pour créer un commentaire</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Conseils -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-lightbulb me-2"></i>
+                    Conseils d'Utilisation
+                </h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success me-2"></i>
+                        Soyez précis dans vos observations
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success me-2"></i>
+                        Mentionnez les progrès spécifiques
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success me-2"></i>
+                        Indiquez les difficultés rencontrées
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success me-2"></i>
+                        Précisez le comportement en classe
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success me-2"></i>
+                        Vous pouvez modifier le commentaire après génération
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Historique des commentaires -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-history me-2"></i>
+                    Historique des Commentaires
+                </h5>
+            </div>
+            <div class="card-body">
+                <div id="commentairesHistorique">
+                    <!-- L'historique sera chargé dynamiquement -->
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-history fa-3x mb-3"></i>
+                        <p>Aucun commentaire généré récemment</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('generateurForm');
+    const generateBtn = document.getElementById('generateBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const loadingResult = document.getElementById('loadingResult');
+    const resultContent = document.getElementById('resultContent');
+    const noResult = document.getElementById('noResult');
+    const generatedComment = document.getElementById('generatedComment');
+    const saveCommentBtn = document.getElementById('saveCommentBtn');
+    const regenerateBtn = document.getElementById('regenerateBtn');
+    const copyBtn = document.getElementById('copyBtn');
+    
+    let currentCommentId = null;
+    
+    // Génération du commentaire
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(form);
+        const data = {
+            eleve_id: formData.get('eleve_id'),
+            type_commentaire: formData.get('type_commentaire'),
+            periode: formData.get('periode'),
+            observations: formData.get('observations'),
+            tone: formData.get('tone')
+        };
+        
+        // Validation
+        if (!data.eleve_id || !data.type_commentaire || !data.periode) {
+            alert('Veuillez remplir tous les champs obligatoires');
+            return;
+        }
+        
+        // Affichage du loading
+        generateBtn.disabled = true;
+        loadingResult.classList.remove('d-none');
+        resultContent.classList.add('d-none');
+        noResult.classList.add('d-none');
+        
+        // Appel API
+        fetch('/generateur/commentaire', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                generatedComment.textContent = data.commentaire;
+                currentCommentId = data.id_commentaire;
+                resultContent.classList.remove('d-none');
+                loadingResult.classList.add('d-none');
+            } else {
+                alert('Erreur lors de la génération : ' + data.error);
+                noResult.classList.remove('d-none');
+                loadingResult.classList.add('d-none');
+            }
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            alert('Erreur lors de la génération du commentaire');
+            noResult.classList.remove('d-none');
+            loadingResult.classList.add('d-none');
+        })
+        .finally(() => {
+            generateBtn.disabled = false;
+        });
+    });
+    
+    // Réinitialisation
+    resetBtn.addEventListener('click', function() {
+        form.reset();
+        resultContent.classList.add('d-none');
+        noResult.classList.remove('d-none');
+        currentCommentId = null;
+    });
+    
+    // Copie du commentaire
+    copyBtn.addEventListener('click', function() {
+        const text = generatedComment.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+            alert('Commentaire copié dans le presse-papiers !');
+        });
+    });
+    
+    // Régénération
+    regenerateBtn.addEventListener('click', function() {
+        form.dispatchEvent(new Event('submit'));
+    });
+    
+    // Sauvegarde
+    saveCommentBtn.addEventListener('click', function() {
+        if (currentCommentId) {
+            alert('Commentaire sauvegardé avec succès !');
+            // Ici on pourrait ajouter une logique pour marquer comme sauvegardé
+        }
+    });
+});
+</script>
+{% endblock %} 

@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LSU École du Cap - Gestionnaire Intelligent</title>
+    
+    <!-- Meta tags -->
+    <meta name="description" content="Système de gestion LSU intelligent pour l'école primaire">
+    <meta name="keywords" content="LSU, école, primaire, évaluation, commentaires">
+    <meta name="author" content="LSU École du Cap">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap 5.3.0 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome 6.5.0 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Navigation principale -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-graduation-cap me-2"></i>
+                LSU École du Cap
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#accueil" data-section="accueil">
+                            <i class="fas fa-home me-1"></i>Accueil
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#generateur" data-section="generateur">
+                            <i class="fas fa-brain me-1"></i>Générateur LSU
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#eleves" data-section="eleves">
+                            <i class="fas fa-users me-1"></i>Gestion Élèves
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#photos" data-section="photos">
+                            <i class="fas fa-camera me-1"></i>Photos Classes
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#parametres" data-section="parametres">
+                            <i class="fas fa-cog me-1"></i>Paramètres
+                        </a>
+                    </li>
+                </ul>
+                
+                <div class="navbar-nav">
+                    <button class="btn btn-outline-light btn-sm" id="exportBtn" title="Exporter les données">
+                        <i class="fas fa-download me-1"></i>Export
+                    </button>
+                    <button class="btn btn-outline-light btn-sm ms-2" id="importBtn" title="Importer des données">
+                        <i class="fas fa-upload me-1"></i>Import
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Conteneur principal -->
+    <main class="container-fluid">
+        <!-- Section Accueil -->
+        <section id="accueil" class="section active">
+            <div class="row">
+                <div class="col-12">
+                    <h1 class="section-title">
+                        <i class="fas fa-home me-2"></i>Tableau de Bord
+                    </h1>
+                </div>
+            </div>
+            
+            <!-- Statistiques -->
+            <div class="row g-4 mb-4">
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="totalEleves">0</h3>
+                            <p>Élèves</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-chalkboard"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="totalClasses">5</h3>
+                            <p>Classes</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-comment"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="totalCommentaires">0</h3>
+                            <p>Commentaires</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-camera"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="totalPhotos">0</h3>
+                            <p>Photos</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Actions rapides -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-bolt me-2"></i>Actions Rapides</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-3">
+                                    <button class="btn btn-primary w-100" onclick="showSection('generateur')">
+                                        <i class="fas fa-brain me-2"></i>Nouveau Commentaire
+                                    </button>
+                                </div>
+                                <div class="col-md-3">
+                                    <button class="btn btn-success w-100" onclick="showSection('eleves')">
+                                        <i class="fas fa-user-plus me-2"></i>Ajouter Élève
+                                    </button>
+                                </div>
+                                <div class="col-md-3">
+                                    <button class="btn btn-warning w-100" onclick="showSection('photos')">
+                                        <i class="fas fa-camera me-2"></i>Gérer Photos
+                                    </button>
+                                </div>
+                                <div class="col-md-3">
+                                    <button class="btn btn-info w-100" onclick="showSection('parametres')">
+                                        <i class="fas fa-cog me-2"></i>Paramètres
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Derniers commentaires -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-history me-2"></i>Derniers Commentaires</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="derniersCommentaires">
+                                <p class="text-muted text-center">Aucun commentaire généré</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section Générateur LSU -->
+        <section id="generateur" class="section">
+            <div class="row">
+                <div class="col-12">
+                    <h1 class="section-title">
+                        <i class="fas fa-brain me-2"></i>Générateur LSU Intelligent
+                    </h1>
+                </div>
+            </div>
+            
+            <div class="row">
+                <!-- Formulaire de génération -->
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-magic me-2"></i>Génération de Commentaire</h5>
+                        </div>
+                        <div class="card-body">
+                            <form id="generateurForm">
+                                <div class="row g-3">
+                                    <!-- Sélection élève -->
+                                    <div class="col-md-6">
+                                        <label for="eleveSelect" class="form-label">
+                                            <i class="fas fa-user me-1"></i>Élève
+                                        </label>
+                                        <select class="form-select" id="eleveSelect" required>
+                                            <option value="">Sélectionner un élève</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <!-- Niveau d'évaluation -->
+                                    <div class="col-md-6">
+                                        <label for="niveauSelect" class="form-label">
+                                            <i class="fas fa-star me-1"></i>Niveau
+                                        </label>
+                                        <select class="form-select" id="niveauSelect" required>
+                                            <option value="">Sélectionner le niveau</option>
+                                            <option value="insuffisant">Insuffisant</option>
+                                            <option value="fragile">Fragile</option>
+                                            <option value="satisfaisant">Satisfaisant</option>
+                                            <option value="excellent">Excellent</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <!-- Trimestre -->
+                                    <div class="col-md-6">
+                                        <label for="trimestreSelect" class="form-label">
+                                            <i class="fas fa-calendar me-1"></i>Trimestre
+                                        </label>
+                                        <select class="form-select" id="trimestreSelect" required>
+                                            <option value="">Sélectionner le trimestre</option>
+                                            <option value="1er">1er trimestre</option>
+                                            <option value="2ème">2ème trimestre</option>
+                                            <option value="3ème">3ème trimestre</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <!-- Points forts -->
+                                    <div class="col-md-6">
+                                        <label class="form-label">
+                                            <i class="fas fa-thumbs-up me-1"></i>Points Forts
+                                        </label>
+                                        <div class="row g-2">
+                                            <div class="col-6">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="participation" value="participation">
+                                                    <label class="form-check-label" for="participation">Participation</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="autonomie" value="autonomie">
+                                                    <label class="form-check-label" for="autonomie">Autonomie</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="progres" value="progres">
+                                                    <label class="form-check-label" for="progres">Progrès</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="creativite" value="creativite">
+                                                    <label class="form-check-label" for="creativite">Créativité</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="ecoute" value="ecoute">
+                                                    <label class="form-check-label" for="ecoute">Écoute</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="entraide" value="entraide">
+                                                    <label class="form-check-label" for="entraide">Entraide</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Observations supplémentaires -->
+                                    <div class="col-12">
+                                        <label for="observations" class="form-label">
+                                            <i class="fas fa-sticky-note me-1"></i>Observations Supplémentaires
+                                        </label>
+                                        <textarea class="form-control" id="observations" rows="3" 
+                                                  placeholder="Ajoutez des observations spécifiques (optionnel)"></textarea>
+                                    </div>
+                                    
+                                    <!-- Boutons d'action -->
+                                    <div class="col-12">
+                                        <button type="submit" class="btn btn-primary btn-lg">
+                                            <i class="fas fa-magic me-2"></i>Générer le Commentaire
+                                        </button>
+                                        <button type="button" class="btn btn-outline-secondary ms-2" onclick="resetGenerateur()">
+                                            <i class="fas fa-undo me-1"></i>Réinitialiser
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Résultat -->
+                <div class="col-lg-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-comment-dots me-2"></i>Commentaire Généré</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="loadingResult" class="text-center d-none">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Génération en cours...</span>
+                                </div>
+                                <p class="mt-2 text-muted">Génération en cours...</p>
+                            </div>
+                            
+                            <div id="resultContent" class="d-none">
+                                <div class="alert alert-success">
+                                    <i class="fas fa-check-circle me-2"></i>Commentaire généré !
+                                </div>
+                                <div id="generatedComment" class="border rounded p-3 bg-light mb-3">
+                                    <!-- Le commentaire sera affiché ici -->
+                                </div>
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-success" onclick="copyComment()">
+                                        <i class="fas fa-copy me-1"></i>Copier
+                                    </button>
+                                    <button class="btn btn-outline-primary" onclick="generateVariant()">
+                                        <i class="fas fa-redo me-1"></i>Variante
+                                    </button>
+                                    <button class="btn btn-outline-info" onclick="saveComment()">
+                                        <i class="fas fa-save me-1"></i>Sauvegarder
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div id="noResult" class="text-center text-muted">
+                                <i class="fas fa-comment fa-3x mb-3"></i>
+                                <p>Remplissez le formulaire et cliquez sur "Générer"</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section Gestion Élèves -->
+        <section id="eleves" class="section">
+            <div class="row">
+                <div class="col-12">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h1 class="section-title">
+                            <i class="fas fa-users me-2"></i>Gestion des Élèves
+                        </h1>
+                        <button class="btn btn-success" onclick="showAddEleveModal()">
+                            <i class="fas fa-user-plus me-2"></i>Ajouter un Élève
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Filtres et recherche -->
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                        <input type="text" class="form-control" id="searchEleve" placeholder="Rechercher un élève...">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select" id="filterClasse">
+                        <option value="">Toutes les classes</option>
+                        <option value="CP">CP</option>
+                        <option value="CE1">CE1</option>
+                        <option value="CE2">CE2</option>
+                        <option value="CM1">CM1</option>
+                        <option value="CM2">CM2</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <div class="button-group d-flex gap-2">
+                        <button id="export-btn" class="btn btn-outline-primary" onclick="exportEleves()">
+                            📤 Exporter
+                        </button>
+                        <input type="file" id="import-file" accept=".json,.csv" style="display: none;" onchange="handleImportEleves(event)" />
+                        <button id="import-btn" class="btn btn-outline-success" onclick="document.getElementById('import-file').click()">
+                            📥 Importer
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Liste des élèves -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div id="elevesList" class="row g-3">
+                                <!-- Les élèves seront affichés ici -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section Photos Classes -->
+        <section id="photos" class="section">
+            <div class="row">
+                <div class="col-12">
+                    <h1 class="section-title">
+                        <i class="fas fa-camera me-2"></i>Photos des Classes
+                    </h1>
+                </div>
+            </div>
+            
+            <div class="row g-4">
+                <!-- CP -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-chalkboard me-2"></i>CP</h5>
+                        </div>
+                        <div class="card-body text-center">
+                            <div class="photo-container" id="photoCP">
+                                <i class="fas fa-camera fa-3x text-muted"></i>
+                                <p class="text-muted mt-2">Aucune photo</p>
+                            </div>
+                            <div class="mt-3">
+                                <input type="file" class="form-control" id="uploadCP" accept="image/*" onchange="uploadPhoto('CP', this)">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- CE1 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-chalkboard me-2"></i>CE1</h5>
+                        </div>
+                        <div class="card-body text-center">
+                            <div class="photo-container" id="photoCE1">
+                                <i class="fas fa-camera fa-3x text-muted"></i>
+                                <p class="text-muted mt-2">Aucune photo</p>
+                            </div>
+                            <div class="mt-3">
+                                <input type="file" class="form-control" id="uploadCE1" accept="image/*" onchange="uploadPhoto('CE1', this)">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- CE2 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-chalkboard me-2"></i>CE2</h5>
+                        </div>
+                        <div class="card-body text-center">
+                            <div class="photo-container" id="photoCE2">
+                                <i class="fas fa-camera fa-3x text-muted"></i>
+                                <p class="text-muted mt-2">Aucune photo</p>
+                            </div>
+                            <div class="mt-3">
+                                <input type="file" class="form-control" id="uploadCE2" accept="image/*" onchange="uploadPhoto('CE2', this)">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- CM1 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-chalkboard me-2"></i>CM1</h5>
+                        </div>
+                        <div class="card-body text-center">
+                            <div class="photo-container" id="photoCM1">
+                                <i class="fas fa-camera fa-3x text-muted"></i>
+                                <p class="text-muted mt-2">Aucune photo</p>
+                            </div>
+                            <div class="mt-3">
+                                <input type="file" class="form-control" id="uploadCM1" accept="image/*" onchange="uploadPhoto('CM1', this)">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- CM2 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-chalkboard me-2"></i>CM2</h5>
+                        </div>
+                        <div class="card-body text-center">
+                            <div class="photo-container" id="photoCM2">
+                                <i class="fas fa-camera fa-3x text-muted"></i>
+                                <p class="text-muted mt-2">Aucune photo</p>
+                            </div>
+                            <div class="mt-3">
+                                <input type="file" class="form-control" id="uploadCM2" accept="image/*" onchange="uploadPhoto('CM2', this)">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section Paramètres -->
+        <section id="parametres" class="section">
+            <div class="row">
+                <div class="col-12">
+                    <h1 class="section-title">
+                        <i class="fas fa-cog me-2"></i>Paramètres
+                    </h1>
+                </div>
+            </div>
+            
+            <div class="row">
+                <!-- Configuration IA -->
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-brain me-2"></i>Configuration IA</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label for="aiUrl" class="form-label">URL de l'IA locale (Ollama)</label>
+                                <input type="url" class="form-control" id="aiUrl" 
+                                       value="http://localhost:11434/api/generate" 
+                                       placeholder="http://localhost:11434/api/generate">
+                            </div>
+                            <div class="mb-3">
+                                <label for="aiModel" class="form-label">Modèle IA</label>
+                                <select class="form-select" id="aiModel">
+                                    <option value="mistral">Mistral</option>
+                                    <option value="llama2">Llama2</option>
+                                    <option value="codellama">CodeLlama</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="aiEnabled" checked>
+                                    <label class="form-check-label" for="aiEnabled">
+                                        Activer l'IA locale
+                                    </label>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" onclick="testAI()">
+                                <i class="fas fa-test me-1"></i>Tester la connexion
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Configuration N8N -->
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-plug me-2"></i>Configuration N8N</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label for="n8nUrl" class="form-label">URL N8N</label>
+                                <input type="url" class="form-control" id="n8nUrl" 
+                                       placeholder="http://localhost:5678">
+                            </div>
+                            <div class="mb-3">
+                                <label for="n8nWebhook" class="form-label">Webhook ID</label>
+                                <input type="text" class="form-control" id="n8nWebhook" 
+                                       placeholder="webhook-id">
+                            </div>
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="n8nEnabled">
+                                    <label class="form-check-label" for="n8nEnabled">
+                                        Activer N8N
+                                    </label>
+                                </div>
+                            </div>
+                            <button class="btn btn-info" onclick="testN8N()">
+                                <i class="fas fa-test me-1"></i>Tester N8N
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sauvegarde et restauration -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-database me-2"></i>Sauvegarde et Restauration</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <button class="btn btn-success w-100" onclick="exportAllData()">
+                                        <i class="fas fa-download me-2"></i>Exporter toutes les données
+                                    </button>
+                                </div>
+                                <div class="col-md-6">
+                                    <button class="btn btn-warning w-100" onclick="importAllData()">
+                                        <i class="fas fa-upload me-2"></i>Importer des données
+                                    </button>
+                                </div>
+                                <div class="col-md-6">
+                                    <button class="btn btn-danger w-100" onclick="clearAllData()">
+                                        <i class="fas fa-trash me-2"></i>Effacer toutes les données
+                                    </button>
+                                </div>
+                                <div class="col-md-6">
+                                    <button class="btn btn-info w-100" onclick="saveSettings()">
+                                        <i class="fas fa-save me-2"></i>Sauvegarder les paramètres
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal Ajout/Modification Élève -->
+    <div class="modal fade" id="eleveModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="eleveModalTitle">
+                        <i class="fas fa-user-plus me-2"></i>Ajouter un Élève
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="eleveForm" onsubmit="handleEleveFormSubmit(event)">
+                        <input type="hidden" id="eleveId">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="elevePrenom" class="form-label">Prénom</label>
+                                <input type="text" class="form-control" id="elevePrenom" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="eleveNom" class="form-label">Nom</label>
+                                <input type="text" class="form-control" id="eleveNom" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="eleveClasse" class="form-label">Classe</label>
+                                <select class="form-select" id="eleveClasse" required>
+                                    <option value="">Sélectionner une classe</option>
+                                    <option value="CP">CP</option>
+                                    <option value="CE1">CE1</option>
+                                    <option value="CE2">CE2</option>
+                                    <option value="CM1">CM1</option>
+                                    <option value="CM2">CM2</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="eleveDateNaissance" class="form-label">Date de naissance</label>
+                                <input type="date" class="form-control" id="eleveDateNaissance" required>
+                            </div>
+                            <div class="col-12">
+                                <label for="eleveNotes" class="form-label">Notes</label>
+                                <textarea class="form-control" id="eleveNotes" rows="3" 
+                                          placeholder="Observations sur l'élève"></textarea>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" form="eleveForm" class="btn btn-primary">Sauvegarder</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Input file caché pour import -->
+    <input type="file" id="importFile" accept=".json" style="display: none;" onchange="handleImportFile(this)">
+
+    <!-- Toast notifications -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="toast" class="toast" role="alert">
+            <div class="toast-header">
+                <i class="fas fa-info-circle me-2"></i>
+                <strong class="me-auto" id="toastTitle">Notification</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-body" id="toastBody">
+                Message de notification
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Modules JavaScript -->
+    <script src="js/data-manager.js"></script>
+    <script src="js/generator.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html> 
